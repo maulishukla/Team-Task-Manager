@@ -9,14 +9,14 @@ export default function Login() {
 
   const login = async () => {
     try {
-      const res = await axios.post("https://your-backend.up.railway.app/api/auth/login", , {
-        email,
-        password,
+      const res = await axios.post("https://your-backend.up.railway.app/api/auth/login", {
+        email: email.trim(),
+        password: password.trim()
       });
 
       localStorage.setItem("token", res.data.token);
       window.location.href = "/dashboard";
-    } catch {
+    } catch (err) {
       alert("Login failed");
     }
   };
@@ -30,8 +30,16 @@ export default function Login() {
       >
         <h2>Login</h2>
 
-        <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+        <input
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <button onClick={login}>Login</button>
       </motion.div>
