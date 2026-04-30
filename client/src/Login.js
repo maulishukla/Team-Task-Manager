@@ -9,7 +9,7 @@ export default function Login() {
 
   const login = async () => {
     try {
-      const res = await axios.post("https://your-backend.up.railway.app/api/auth/login", {
+      const res = await axios.post("https://your-backend.up.railway.app/api/auth/login" {
         email: email.trim(),
         password: password.trim()
       });

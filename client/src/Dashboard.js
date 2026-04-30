@@ -15,9 +15,10 @@ export default function Dashboard() {
     setTasks(res.data);
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+useEffect(() => {
+  fetchTasks();
+  // eslint-disable-next-line
+}, []);
 
   const createTask = async () => {
     if (!title) return;
