@@ -1,23 +1,21 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const Project = require("../models/Project");
-const auth = require("../middleware/auth");
 
-// CREATE PROJECT (ADMIN ONLY)
-router.post("/", auth, async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ msg: "Only admin allowed" });
+router.post("/", async (req, res) => {
+  try {
+    const project = new Project({
+      name: req.body.name
+    });
+
+    await project.save();
+    res.json(project);
+  } catch {
+    res.status(500).json({ message: "Error creating project" });
   }
-
-  const project = await Project.create({
-    ...req.body,
-    createdBy: req.user.userId
-  });
-
-  res.json(project);
 });
 
-// GET PROJECTS
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
   const projects = await Project.find();
   res.json(projects);
 });
