@@ -39,8 +39,7 @@ export default function Dashboard() {
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      <button onClick={createTask}>Add</button>
-
+      <button>Add Task NOW</button>
       {tasks.map((task) => (
         <div key={task._id}>
           <h3>{task.title}</h3>
