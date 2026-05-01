@@ -15,10 +15,7 @@ export default function Login() {
         }
       );
 
-      // Save token
       localStorage.setItem("token", res.data.token);
-
-      // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (err) {
       console.log(err.response?.data || err.message);
