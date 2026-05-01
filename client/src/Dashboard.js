@@ -26,26 +26,33 @@ export default function Dashboard() {
 
   // ================= CREATE TASK =================
   const createTask = async () => {
-    if (!title) {
-      alert("Enter task name");
-      return;
-    }
+  alert("Button clicked"); // STEP 1
 
-    try {
-      await axios.post(`${BASE_URL}/api/tasks`, {
+  if (!title) {
+    alert("No title entered");
+    return;
+  }
+
+  try {
+    alert("Sending request..."); // STEP 2
+
+    const res = await axios.post(
+      "https://team-task-manager-production-349d.up.railway.app/api/tasks",
+      {
         title,
-        status: "todo",
-      });
+        status: "todo"
+      }
+    );
 
-      alert("Task added successfully");
+    alert("Response received"); // STEP 3
 
-      setTitle("");
-      fetchTasks();
-    } catch (err) {
-      console.log(err.response?.data || err.message);
-      alert("Failed to add task");
-    }
-  };
+    setTitle("");
+    fetchTasks();
+
+  } catch (err) {
+    alert("ERROR: " + (err.response?.data?.message || err.message));
+  }
+};
 
   // ================= UPDATE TASK =================
   const updateStatus = async (id, status) => {
