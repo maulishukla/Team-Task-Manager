@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState , useCallback} from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import "./dashboard.css";
@@ -18,22 +18,22 @@ export default function Dashboard() {
   }
 
   // ================= FETCH TASKS =================
-  const fetchTasks = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/tasks`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setTasks(res.data);
-    } catch (err) {
-      alert("Failed to load tasks");
-    }
-  };
+  const fetchTasks = useCallback(async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/tasks`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setTasks(res.data);
+  } catch (err) {
+    alert("Failed to load tasks");
+  }
+}, [token]);
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+  fetchTasks();
+}, [fetchTasks]);
 
   // ================= CREATE TASK =================
   const createTask = async () => {
