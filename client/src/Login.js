@@ -45,9 +45,14 @@ export default function Login() {
         />
 
         <button onClick={login}>Login</button>
-        <p onClick={() => window.location.href="/signup"} style={{ cursor: "pointer", marginTop: "10px" }}>
+        <p
+  style={{ marginTop: "10px", cursor: "pointer", color: "#6366f1" }}
+  onClick={() => window.location.href = "/signup"}
+>
   Create Account
 </p>
+
+       
       </motion.div>
     </div>
   );
