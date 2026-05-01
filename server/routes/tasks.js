@@ -5,26 +5,20 @@ const Task = require("../models/Task");
 // ================= CREATE TASK =================
 router.post("/", async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-
-    const { title, status } = req.body;
-
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
-    }
+    console.log("REQ BODY:", req.body);
 
     const task = new Task({
-      title,
-      status: status || "todo",
+      title: req.body.title,
+      status: "todo"
     });
 
-    const saved = await task.save();
+    await task.save();
 
-    res.status(201).json(saved);
+    res.json({ message: "Task created successfully" });
 
   } catch (err) {
-    console.error("CREATE TASK ERROR:", err);
-    res.status(500).json({ message: err.message });
+    console.error("ERROR:", err);
+    res.status(500).json({ message: "Error creating task" });
   }
 });
 
