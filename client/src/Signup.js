@@ -9,7 +9,7 @@ export default function Signup() {
   const signup = async () => {
     try {
       await axios.post(
-        "https://your-backend.up.railway.app/api/auth/register",
+        "https://team-task-backend-production.up.railway.app/api/auth/register",
         {
           name,
           email,
