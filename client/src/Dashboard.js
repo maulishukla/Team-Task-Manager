@@ -3,34 +3,58 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import "./dashboard.css";
 
+const BASE_URL = "https://team-task-manager-production-349d.up.railway.app";
+
 export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const token = localStorage.getItem("token");
 
   const fetchTasks = async () => {
-    const res = await axios.get("http://localhost:5000/api/tasks", {
-      headers: { Authorization: token },
-    });
-    setTasks(res.data);
+    try {
+      const res = await axios.get(`${BASE_URL}/api/tasks`, {
+        headers: { Authorization: token },
+      });
+      setTasks(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-useEffect(() => {
-  fetchTasks();
-  // eslint-disable-next-line
-}, []);
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   const createTask = async () => {
     if (!title) return;
 
-    await axios.post(
-      "http://localhost:5000/api/tasks",
-      { title, status: "todo" },
-      { headers: { Authorization: token } }
-    );
+    try {
+      await axios.post(
+        `${BASE_URL}/api/tasks`,
+        { title, status: "todo" },
+        { headers: { Authorization: token } }
+      );
 
-    setTitle("");
-    fetchTasks();
+      setTitle("");
+      fetchTasks();
+    } catch (err) {
+      console.log(err);
+      alert("Failed to add task");
+    }
+  };
+
+  const updateStatus = async (id, status) => {
+    try {
+      await axios.put(
+        `${BASE_URL}/api/tasks/${id}`,
+        { status },
+        { headers: { Authorization: token } }
+      );
+
+      fetchTasks();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -59,14 +83,9 @@ useEffect(() => {
 
             <select
               value={task.status}
-              onChange={async (e) => {
-                await axios.put(
-                  `https://your-backend.up.railway.app/api/tasks`,
-                  { status: e.target.value },
-                  { headers: { Authorization: token } }
-                );
-                fetchTasks();
-              }}
+              onChange={(e) =>
+                updateStatus(task._id, e.target.value)
+              }
             >
               <option value="todo">Todo</option>
               <option value="in-progress">In Progress</option>
