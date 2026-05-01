@@ -17,17 +17,30 @@ export default function Dashboard() {
   }, []);
 
   const createTask = async () => {
-    if (!title) return alert("Enter task");
+  if (!title) {
+    alert("Enter task");
+    return;
+  }
 
-    await axios.post(`${BASE_URL}/api/tasks`, {
-      title,
-      projectId: null,
-      assignedTo: null
-    });
+  try {
+    await axios.post(
+      `${BASE_URL}/api/tasks`,
+      {
+        title,
+        projectId: null,
+        assignedTo: null
+      }
+    );
+
+    alert("Task added");
 
     setTitle("");
     fetchTasks();
-  };
+
+  } catch (err) {
+    alert("Error: " + (err.response?.data?.message || err.message));
+  }
+};
 
   return (
     <div>

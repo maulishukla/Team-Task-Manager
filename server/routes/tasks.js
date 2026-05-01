@@ -7,18 +7,24 @@ router.post("/", async (req, res) => {
   try {
     const { title, projectId, assignedTo } = req.body;
 
+    if (!title) {
+      return res.status(400).json({ message: "Title required" });
+    }
+
     const task = new Task({
       title,
-      projectId,
-      assignedTo,
-      status: "todo"
+      status: "todo",
+      projectId: projectId || null,
+      assignedTo: assignedTo || null
     });
 
     await task.save();
-    res.json(task);
+
+    res.json({ message: "Task created", task });
 
   } catch (err) {
-    res.status(500).json({ message: "Error creating task" });
+    console.error("TASK ERROR:", err);
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -6,12 +6,14 @@ const TaskSchema = new mongoose.Schema({
 
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Project"
+    ref: "Project",
+    default: null
   },
 
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    default: null
   }
 
 }, { timestamps: true });
