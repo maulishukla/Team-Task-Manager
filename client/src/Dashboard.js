@@ -1,4 +1,4 @@
-import { useEffect, useState , useCallback} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import "./dashboard.css";
@@ -9,31 +9,20 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
 
-  const token = localStorage.getItem("token");
-
-  // 🔴 If no token → force login
-  if (!token) {
-    alert("Please login again");
-    window.location.href = "/";
-  }
-
   // ================= FETCH TASKS =================
-  const fetchTasks = useCallback(async () => {
-  try {
-    const res = await axios.get(`${BASE_URL}/api/tasks`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    setTasks(res.data);
-  } catch (err) {
-    alert("Failed to load tasks");
-  }
-}, [token]);
+  const fetchTasks = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/tasks`);
+      setTasks(res.data);
+    } catch (err) {
+      alert("Failed to load tasks");
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-  fetchTasks();
-}, [fetchTasks]);
+    fetchTasks();
+  }, []);
 
   // ================= CREATE TASK =================
   const createTask = async () => {
@@ -43,24 +32,17 @@ export default function Dashboard() {
     }
 
     try {
-      await axios.post(
-        `${BASE_URL}/api/tasks`,
-        {
-          title,
-          status: "todo",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post(`${BASE_URL}/api/tasks`, {
+        title,
+        status: "todo",
+      });
 
       alert("Task added successfully");
 
       setTitle("");
       fetchTasks();
     } catch (err) {
+      console.log(err.response?.data || err.message);
       alert("Failed to add task");
     }
   };
@@ -68,19 +50,14 @@ export default function Dashboard() {
   // ================= UPDATE TASK =================
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(
-        `${BASE_URL}/api/tasks/${id}`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.put(`${BASE_URL}/api/tasks/${id}`, {
+        status,
+      });
 
       fetchTasks();
     } catch (err) {
       alert("Failed to update task");
+      console.log(err);
     }
   };
 
