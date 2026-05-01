@@ -1,6 +1,7 @@
+// force rebuild
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Login";
-import Signup from "./temp";
+import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 
 function App() {
