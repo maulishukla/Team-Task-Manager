@@ -10,11 +10,17 @@ export default function Signup() {
     try {
       await axios.post(
         "https://your-backend.up.railway.app/api/auth/register",
-        { name, email, password, role: "admin" }
+        {
+          name,
+          email,
+          password,
+          role: "admin"
+        }
       );
+
       alert("Signup successful");
       window.location.href = "/";
-    } catch {
+    } catch (err) {
       alert("Signup failed");
     }
   };
@@ -22,9 +28,11 @@ export default function Signup() {
   return (
     <div style={{ padding: 20 }}>
       <h2>Signup</h2>
+
       <input placeholder="Name" onChange={(e) => setName(e.target.value)} /><br/><br/>
       <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} /><br/><br/>
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} /><br/><br/>
+
       <button onClick={signup}>Signup</button>
     </div>
   );
