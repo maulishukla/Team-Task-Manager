@@ -8,16 +8,26 @@ const BASE_URL = "https://team-task-manager-production-349d.up.railway.app";
 export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
+
   const token = localStorage.getItem("token");
 
+  // 🔴 If no token → force login
+  if (!token) {
+    alert("Please login again");
+    window.location.href = "/";
+  }
+
+  // ================= FETCH TASKS =================
   const fetchTasks = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/tasks`, {
-        headers: { Authorization: token },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setTasks(res.data);
     } catch (err) {
-      console.log(err);
+      alert("Failed to load tasks");
     }
   };
 
@@ -25,38 +35,56 @@ export default function Dashboard() {
     fetchTasks();
   }, []);
 
+  // ================= CREATE TASK =================
   const createTask = async () => {
-    if (!title) return;
+    if (!title) {
+      alert("Enter task name");
+      return;
+    }
 
     try {
       await axios.post(
         `${BASE_URL}/api/tasks`,
-        { title, status: "todo" },
-        { headers: { Authorization: token } }
+        {
+          title,
+          status: "todo",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
+      alert("Task added successfully");
 
       setTitle("");
       fetchTasks();
     } catch (err) {
-      console.log(err);
       alert("Failed to add task");
     }
   };
 
+  // ================= UPDATE TASK =================
   const updateStatus = async (id, status) => {
     try {
       await axios.put(
         `${BASE_URL}/api/tasks/${id}`,
         { status },
-        { headers: { Authorization: token } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       fetchTasks();
     } catch (err) {
-      console.log(err);
+      alert("Failed to update task");
     }
   };
 
+  // ================= UI =================
   return (
     <div className="container">
       <h1 className="title">Task Manager</h1>
@@ -92,7 +120,9 @@ export default function Dashboard() {
               <option value="done">Done</option>
             </select>
 
-            <p className={`status ${task.status}`}>{task.status}</p>
+            <p className={`status ${task.status}`}>
+              {task.status}
+            </p>
           </motion.div>
         ))}
       </div>
