@@ -2,30 +2,69 @@ const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
 
-// CREATE TASK (ULTRA SIMPLE)
+
+// ================= CREATE TASK =================
 router.post("/", async (req, res) => {
   try {
-    console.log("REQ:", req.body);
+    const { title } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ message: "Title is required" });
+    }
 
     const task = new Task({
-      title: req.body.title,
+      title,
       status: "todo"
     });
 
-    await task.save();
+    const savedTask = await task.save();
 
-    res.json(task);
+    res.json(savedTask);
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Task creation failed" });
+    console.error("CREATE ERROR:", err);
+    res.status(500).json({ message: "Failed to create task" });
   }
 });
 
-// GET TASKS
+
+// ================= GET ALL TASKS =================
 router.get("/", async (req, res) => {
-  const tasks = await Task.find();
-  res.json(tasks);
+  try {
+    const tasks = await Task.find().sort({ createdAt: -1 });
+    res.json(tasks);
+
+  } catch (err) {
+    console.error("GET ERROR:", err);
+    res.status(500).json({ message: "Failed to fetch tasks" });
+  }
 });
+
+
+// ================= UPDATE TASK STATUS =================
+router.put("/:id", async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    console.log("UPDATE:", req.params.id, status);
+
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.json(updatedTask);
+
+  } catch (err) {
+    console.error("UPDATE ERROR:", err);
+    res.status(500).json({ message: "Failed to update task" });
+  }
+});
+
 
 module.exports = router;
